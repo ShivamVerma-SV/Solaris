@@ -14,6 +14,8 @@ public interface AlertRepository extends JpaRepository<Alert, Long> {
 
     boolean existsBySiteId(Long siteId);
 
+    boolean existsByBatteryId(Long batteryId);
+
     Page<Alert> findByUserId(Long userId, Pageable pageable);
 
     Page<Alert> findByUserIdAndRead(Long userId, boolean read, Pageable pageable);
