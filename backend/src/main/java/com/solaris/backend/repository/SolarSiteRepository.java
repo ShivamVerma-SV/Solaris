@@ -19,4 +19,6 @@ public interface SolarSiteRepository extends JpaRepository<SolarSite, Long>, Jpa
     List<SolarSite> findByOwnerIdOrderByName(Long ownerId);
 
     Optional<SolarSite> findByIdAndOwnerId(Long id, Long ownerId);
+
+    List<SolarSite> findByActiveTrue();
 }

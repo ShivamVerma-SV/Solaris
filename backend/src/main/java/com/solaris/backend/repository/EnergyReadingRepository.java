@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.Instant;
+import java.util.Optional;
 
 public interface EnergyReadingRepository extends JpaRepository<EnergyReading, Long> {
     boolean existsByDeviceId(Long deviceId);
@@ -36,4 +37,6 @@ public interface EnergyReadingRepository extends JpaRepository<EnergyReading, Lo
             @Param("siteId") Long siteId,
             @Param("from") Instant from,
             @Param("to") Instant to);
+
+    Optional<EnergyReading> findTopBySiteIdOrderByTimestampDesc(Long siteId);
 }

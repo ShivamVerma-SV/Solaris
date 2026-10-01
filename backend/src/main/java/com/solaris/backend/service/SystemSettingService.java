@@ -40,6 +40,12 @@ public class SystemSettingService {
         return getOrCreate();
     }
 
+    @Transactional
+    public SystemSetting getEntityForUpdate() {
+        return repository.findLockedById(SystemSetting.SINGLETON_ID)
+                .orElseGet(() -> repository.save(defaults()));
+    }
+
     private SystemSetting getOrCreate() {
         return repository.findById(SystemSetting.SINGLETON_ID)
                 .orElseGet(() -> repository.save(defaults()));
