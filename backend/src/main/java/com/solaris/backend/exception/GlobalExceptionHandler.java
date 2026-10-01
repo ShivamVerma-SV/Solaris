@@ -55,6 +55,12 @@ public class GlobalExceptionHandler {
         return error(HttpStatus.SERVICE_UNAVAILABLE, exception.getMessage(), request, null);
     }
 
+    @ExceptionHandler(ReportQueryException.class)
+    public ResponseEntity<ApiErrorResponse> handleReportQuery(ReportQueryException exception,
+                                                               HttpServletRequest request) {
+        return error(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), request, null);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse> handleValidation(MethodArgumentNotValidException exception,
                                                               HttpServletRequest request) {
