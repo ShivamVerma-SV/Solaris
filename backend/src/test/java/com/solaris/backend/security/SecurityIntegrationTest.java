@@ -2,6 +2,8 @@ package com.solaris.backend.security;
 
 import com.solaris.backend.entity.User;
 import com.solaris.backend.entity.UserRole;
+import com.solaris.backend.entity.SolarSite;
+import com.solaris.backend.repository.SolarSiteRepository;
 import com.solaris.backend.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +13,8 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.math.BigDecimal;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -29,6 +33,9 @@ class SecurityIntegrationTest {
     private UserRepository userRepository;
 
     @Autowired
+    private SolarSiteRepository siteRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -39,6 +46,7 @@ class SecurityIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        siteRepository.deleteAll();
         userRepository.deleteAll();
         admin = userRepository.save(user("admin@example.com", UserRole.ADMIN));
         homeowner = userRepository.save(user("owner@example.com", UserRole.HOMEOWNER));
@@ -59,6 +67,31 @@ class SecurityIntegrationTest {
                         .header("Authorization", bearer(jwtService.generateAccessToken(homeowner))))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.status").value(403));
+    }
+
+    @Test
+    void adminCannotAccessHomeownerProfile() throws Exception {
+        mockMvc.perform(get("/api/homeowner/profile")
+                        .header("Authorization", bearer(jwtService.generateAccessToken(admin))))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.status").value(403));
+    }
+
+    @Test
+    void homeownerCannotReadAnotherHomeownersSiteByChangingId() throws Exception {
+        User otherOwner = userRepository.save(user("other@example.com", UserRole.HOMEOWNER));
+        SolarSite site = siteRepository.save(SolarSite.builder()
+                .owner(otherOwner)
+                .code("OTHER-HOME")
+                .name("Other home")
+                .capacityKw(new BigDecimal("4.500"))
+                .active(true)
+                .build());
+
+        mockMvc.perform(get("/api/homeowner/sites/{id}", site.getId())
+                        .header("Authorization", bearer(jwtService.generateAccessToken(homeowner))))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Solar site not found"));
     }
 
     @Test
