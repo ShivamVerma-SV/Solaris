@@ -1,6 +1,7 @@
 package com.solaris.backend.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.dao.DataAccessException;
 import com.solaris.backend.entity.User;
 import com.solaris.backend.repository.UserRepository;
 
@@ -85,9 +87,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter  {
                     .getContext()
                     .setAuthentication(authentication);
 
-        } catch (Exception ignored) {
+        } catch (JwtException | IllegalArgumentException exception) {
             SecurityContextHolder.clearContext();
             securityErrorWriter.writeUnauthorized(request, response, "Access token is invalid or expired");
+            return;
+        } catch (DataAccessException exception) {
+            SecurityContextHolder.clearContext();
+            securityErrorWriter.writeServiceUnavailable(
+                    request, response, "Authentication data is temporarily unavailable");
             return;
         }
 

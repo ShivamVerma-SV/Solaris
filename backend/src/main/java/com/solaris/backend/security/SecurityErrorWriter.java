@@ -28,6 +28,11 @@ public class SecurityErrorWriter {
         write(request, response, HttpStatus.FORBIDDEN, message);
     }
 
+    public void writeServiceUnavailable(HttpServletRequest request, HttpServletResponse response, String message)
+            throws IOException {
+        write(request, response, HttpStatus.SERVICE_UNAVAILABLE, message);
+    }
+
     private void write(HttpServletRequest request, HttpServletResponse response, HttpStatus status, String message)
             throws IOException {
         response.setStatus(status.value());

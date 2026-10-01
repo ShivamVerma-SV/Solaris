@@ -58,6 +58,10 @@ public class AdminBatteryService {
         if (batteryRepository.existsByIdentifierAndIdNot(identifier, id)) {
             throw new ConflictException("Battery identifier already exists");
         }
+        if (!battery.getSite().getId().equals(request.getSiteId())
+                && (storageReadingRepository.existsByBatteryId(id) || alertRepository.existsByBatteryId(id))) {
+            throw new ConflictException("Battery cannot move to another site while history or alerts depend on it");
+        }
         apply(battery, request, identifier);
         return toResponse(batteryRepository.save(battery));
     }

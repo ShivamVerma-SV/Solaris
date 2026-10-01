@@ -4,6 +4,7 @@ import com.solaris.backend.entity.StorageReading;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.EntityGraph;
 
 import java.time.Instant;
 
@@ -12,9 +13,11 @@ public interface StorageReadingRepository extends JpaRepository<StorageReading, 
 
     boolean existsBySiteId(Long siteId);
 
+    @EntityGraph(attributePaths = {"site", "battery"})
     Page<StorageReading> findBySiteOwnerIdAndTimestampBetween(
             Long ownerId, Instant from, Instant to, Pageable pageable);
 
+    @EntityGraph(attributePaths = {"site", "battery"})
     Page<StorageReading> findBySiteOwnerIdAndBatteryIdAndTimestampBetween(
             Long ownerId, Long batteryId, Instant from, Instant to, Pageable pageable);
 }

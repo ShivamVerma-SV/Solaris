@@ -14,7 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
 
@@ -31,10 +30,10 @@ public class HomeownerEnergyService {
     public EnergySummaryResponse summary(Long ownerId, Long siteId, Instant from, Instant to) {
         TimeRange range = range(from, to);
         validateSite(ownerId, siteId);
-        Object[] totals = readingRepository.summarize(ownerId, siteId, range.from(), range.to());
+        var totals = readingRepository.summarize(ownerId, siteId, range.from(), range.to());
         return new EnergySummaryResponse(
-                siteId, range.from(), range.to(), decimal(totals[0]), decimal(totals[1]),
-                decimal(totals[2]), decimal(totals[3]), ((Number) totals[4]).longValue());
+                siteId, range.from(), range.to(), totals.getProductionKwh(), totals.getConsumptionKwh(),
+                totals.getGridImportKwh(), totals.getGridExportKwh(), totals.getReadingCount());
     }
 
     @Transactional(readOnly = true)
@@ -74,10 +73,6 @@ public class HomeownerEnergyService {
                 reading.getDevice().getId(), reading.getDevice().getIdentifier(),
                 reading.getProductionKwh(), reading.getConsumptionKwh(), reading.getGridImportKwh(),
                 reading.getGridExportKwh(), reading.getTimestamp());
-    }
-
-    private BigDecimal decimal(Object value) {
-        return value instanceof BigDecimal decimal ? decimal : new BigDecimal(value.toString());
     }
 
     private record TimeRange(Instant from, Instant to) {

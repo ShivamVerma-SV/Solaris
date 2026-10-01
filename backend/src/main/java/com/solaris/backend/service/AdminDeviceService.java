@@ -71,6 +71,10 @@ public class AdminDeviceService {
         if (deviceRepository.existsByIdentifierAndIdNot(identifier, id)) {
             throw new ConflictException("Device identifier already exists");
         }
+        if (!device.getSite().getId().equals(request.getSiteId())
+                && (energyReadingRepository.existsByDeviceId(id) || alertRepository.existsByDeviceId(id))) {
+            throw new ConflictException("Device cannot move to another site while telemetry or alerts depend on it");
+        }
         apply(device, request, identifier);
         return toResponse(deviceRepository.save(device));
     }

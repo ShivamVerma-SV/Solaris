@@ -71,7 +71,11 @@ public class AdminSiteService {
         if (siteRepository.existsByCodeAndIdNot(code, id)) {
             throw new ConflictException("Site code already exists");
         }
-        site.setOwner(homeowner(request.getOwnerId()));
+        User owner = homeowner(request.getOwnerId());
+        if (!site.getOwner().getId().equals(owner.getId()) && hasDependents(id)) {
+            throw new ConflictException("Site ownership cannot change while operational or historical data depends on it");
+        }
+        site.setOwner(owner);
         site.setCode(code);
         site.setName(request.getName().trim());
         site.setAddress(normalizeNullable(request.getAddress()));
@@ -83,14 +87,18 @@ public class AdminSiteService {
     @Transactional
     public void delete(Long id) {
         SolarSite site = findSite(id);
-        if (deviceRepository.existsBySiteId(id)
-                || batteryRepository.existsBySiteId(id)
-                || energyReadingRepository.existsBySiteId(id)
-                || storageReadingRepository.existsBySiteId(id)
-                || alertRepository.existsBySiteId(id)) {
+        if (hasDependents(id)) {
             throw new ConflictException("Site cannot be deleted while devices, batteries, telemetry, or alerts depend on it");
         }
         siteRepository.delete(site);
+    }
+
+    private boolean hasDependents(Long siteId) {
+        return deviceRepository.existsBySiteId(siteId)
+                || batteryRepository.existsBySiteId(siteId)
+                || energyReadingRepository.existsBySiteId(siteId)
+                || storageReadingRepository.existsBySiteId(siteId)
+                || alertRepository.existsBySiteId(siteId);
     }
 
     private User homeowner(Long id) {
