@@ -101,6 +101,22 @@ class JwtAuthenticationFilterTest {
     }
 
     @Test
+    void expiredTokenReturnsUnauthorized() throws Exception {
+        JwtService expiredTokenService = new JwtService(
+                "test-only-secret-key-that-is-at-least-thirty-two-bytes-long",
+                Duration.ofSeconds(-1),
+                Duration.ofDays(7)
+        );
+        var request = bearerRequest(expiredTokenService.generateAccessToken(user));
+        var response = new MockHttpServletResponse();
+
+        filter.doFilter(request, response, (ignoredRequest, ignoredResponse) -> { });
+
+        assertThat(response.getStatus()).isEqualTo(401);
+        assertThat(response.getContentAsString()).contains("invalid or expired");
+    }
+
+    @Test
     void validAccessTokenBuildsAuthenticatedPrincipal() throws Exception {
         when(userRepository.findById(3L)).thenReturn(Optional.of(user));
         var request = bearerRequest(jwtService.generateAccessToken(user));

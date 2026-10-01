@@ -62,6 +62,13 @@ class SecurityIntegrationTest {
     }
 
     @Test
+    void malformedBearerHeaderReturnsJsonUnauthorized() throws Exception {
+        mockMvc.perform(get("/api/admin/users").header("Authorization", "Bearer"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value("Malformed Authorization header"));
+    }
+
+    @Test
     void homeownerCannotAccessAdminEndpoint() throws Exception {
         mockMvc.perform(get("/api/admin/users")
                         .header("Authorization", bearer(jwtService.generateAccessToken(homeowner))))
@@ -128,6 +135,60 @@ class SecurityIntegrationTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.message").value("Malformed JSON request"));
+    }
+
+    @Test
+    void missingRequiredRegistrationFieldsReturnFieldErrors() throws Exception {
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Validation failed"))
+                .andExpect(jsonPath("$.fieldErrors.name").isArray())
+                .andExpect(jsonPath("$.fieldErrors.email").isArray())
+                .andExpect(jsonPath("$.fieldErrors.password").isArray());
+    }
+
+    @Test
+    void invalidDeviceEnumReturnsBadRequest() throws Exception {
+        mockMvc.perform(post("/api/admin/devices")
+                        .header("Authorization", bearer(jwtService.generateAccessToken(admin)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "identifier": "INV-INVALID",
+                                  "name": "Invalid inverter",
+                                  "type": "NOT_A_DEVICE_TYPE",
+                                  "status": "ONLINE",
+                                  "siteId": 1
+                                }
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Malformed JSON request"));
+    }
+
+    @Test
+    void missingUserIdReturnsNotFound() throws Exception {
+        mockMvc.perform(get("/api/admin/users/{id}", Long.MAX_VALUE)
+                        .header("Authorization", bearer(jwtService.generateAccessToken(admin))))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("User not found"));
+    }
+
+    @Test
+    void energyEndpointsReturnEmptyDomainResults() throws Exception {
+        String accessToken = jwtService.generateAccessToken(homeowner);
+        mockMvc.perform(get("/api/homeowner/energy/readings")
+                        .header("Authorization", bearer(accessToken)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(0)))
+                .andExpect(jsonPath("$.totalElements").value(0));
+
+        mockMvc.perform(get("/api/homeowner/energy/summary")
+                        .header("Authorization", bearer(accessToken)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.productionKwh").value(0))
+                .andExpect(jsonPath("$.readingCount").value(0));
     }
 
     private User user(String email, UserRole role) {
