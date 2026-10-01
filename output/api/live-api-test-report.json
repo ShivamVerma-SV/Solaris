@@ -1,0 +1,1539 @@
+{
+  "generatedAt": "2026-10-01T14:36:23.770290+00:00",
+  "baseUrl": "http://127.0.0.1:8080",
+  "runId": "1790865380-39960",
+  "success": true,
+  "summary": {
+    "total": 127,
+    "passed": 127,
+    "failed": 0,
+    "serverErrors": 0
+  },
+  "failure": null,
+  "results": [
+    {
+      "name": "health through protected route",
+      "method": "GET",
+      "path": "/api/admin/users",
+      "expectedStatus": [
+        401
+      ],
+      "actualStatus": 401,
+      "passed": true,
+      "durationMs": 30.41,
+      "detail": null
+    },
+    {
+      "name": "malformed bearer",
+      "method": "GET",
+      "path": "/api/admin/users",
+      "expectedStatus": [
+        401
+      ],
+      "actualStatus": 401,
+      "passed": true,
+      "durationMs": 1.7,
+      "detail": null
+    },
+    {
+      "name": "invalid JWT",
+      "method": "GET",
+      "path": "/api/admin/users",
+      "expectedStatus": [
+        401
+      ],
+      "actualStatus": 401,
+      "passed": true,
+      "durationMs": 3.12,
+      "detail": null
+    },
+    {
+      "name": "malformed JSON",
+      "method": "POST",
+      "path": "/api/auth/register",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 7.41,
+      "detail": null
+    },
+    {
+      "name": "missing registration fields",
+      "method": "POST",
+      "path": "/api/auth/register",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 5.47,
+      "detail": null
+    },
+    {
+      "name": "invalid registration email",
+      "method": "POST",
+      "path": "/api/auth/register",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 2.17,
+      "detail": null
+    },
+    {
+      "name": "short registration password",
+      "method": "POST",
+      "path": "/api/auth/register",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 2.05,
+      "detail": null
+    },
+    {
+      "name": "method not supported",
+      "method": "GET",
+      "path": "/api/auth/login",
+      "expectedStatus": [
+        405
+      ],
+      "actualStatus": 405,
+      "passed": true,
+      "durationMs": 1.72,
+      "detail": null
+    },
+    {
+      "name": "register E2E Admin",
+      "method": "POST",
+      "path": "/api/auth/register",
+      "expectedStatus": [
+        201
+      ],
+      "actualStatus": 201,
+      "passed": true,
+      "durationMs": 124.34,
+      "detail": null
+    },
+    {
+      "name": "register E2E Owner",
+      "method": "POST",
+      "path": "/api/auth/register",
+      "expectedStatus": [
+        201
+      ],
+      "actualStatus": 201,
+      "passed": true,
+      "durationMs": 100.59,
+      "detail": null
+    },
+    {
+      "name": "register E2E Other Owner",
+      "method": "POST",
+      "path": "/api/auth/register",
+      "expectedStatus": [
+        201
+      ],
+      "actualStatus": 201,
+      "passed": true,
+      "durationMs": 103.09,
+      "detail": null
+    },
+    {
+      "name": "duplicate public registration",
+      "method": "POST",
+      "path": "/api/auth/register",
+      "expectedStatus": [
+        409
+      ],
+      "actualStatus": 409,
+      "passed": true,
+      "durationMs": 3.98,
+      "detail": null
+    },
+    {
+      "name": "login e2e-solaris-1790865380-39960-admin",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 137.88,
+      "detail": null
+    },
+    {
+      "name": "login e2e-solaris-1790865380-39960-owner",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 99.95,
+      "detail": null
+    },
+    {
+      "name": "login e2e-solaris-1790865380-39960-other",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 103.14,
+      "detail": null
+    },
+    {
+      "name": "wrong password",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "expectedStatus": [
+        401
+      ],
+      "actualStatus": 401,
+      "passed": true,
+      "durationMs": 100.3,
+      "detail": null
+    },
+    {
+      "name": "unknown login",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "expectedStatus": [
+        401
+      ],
+      "actualStatus": 401,
+      "passed": true,
+      "durationMs": 8.15,
+      "detail": null
+    },
+    {
+      "name": "expired access token",
+      "method": "GET",
+      "path": "/api/homeowner/profile",
+      "expectedStatus": [
+        401
+      ],
+      "actualStatus": 401,
+      "passed": true,
+      "durationMs": 1.51,
+      "detail": null
+    },
+    {
+      "name": "refresh token cannot access API",
+      "method": "GET",
+      "path": "/api/homeowner/profile",
+      "expectedStatus": [
+        401
+      ],
+      "actualStatus": 401,
+      "passed": true,
+      "durationMs": 0.9,
+      "detail": null
+    },
+    {
+      "name": "access token cannot refresh",
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "expectedStatus": [
+        401
+      ],
+      "actualStatus": 401,
+      "passed": true,
+      "durationMs": 2.1,
+      "detail": null
+    },
+    {
+      "name": "homeowner cannot access admin",
+      "method": "GET",
+      "path": "/api/admin/users",
+      "expectedStatus": [
+        403
+      ],
+      "actualStatus": 403,
+      "passed": true,
+      "durationMs": 2.98,
+      "detail": null
+    },
+    {
+      "name": "admin cannot access homeowner",
+      "method": "GET",
+      "path": "/api/homeowner/profile",
+      "expectedStatus": [
+        403
+      ],
+      "actualStatus": 403,
+      "passed": true,
+      "durationMs": 4.32,
+      "detail": null
+    },
+    {
+      "name": "rotate refresh token",
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 5.96,
+      "detail": null
+    },
+    {
+      "name": "rotated refresh replay",
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "expectedStatus": [
+        401
+      ],
+      "actualStatus": 401,
+      "passed": true,
+      "durationMs": 3.83,
+      "detail": null
+    },
+    {
+      "name": "logout rotated token",
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "expectedStatus": [
+        204
+      ],
+      "actualStatus": 204,
+      "passed": true,
+      "durationMs": 4.31,
+      "detail": null
+    },
+    {
+      "name": "revoked refresh token",
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "expectedStatus": [
+        401
+      ],
+      "actualStatus": 401,
+      "passed": true,
+      "durationMs": 3.31,
+      "detail": null
+    },
+    {
+      "name": "login e2e-solaris-1790865380-39960-other",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 105.69,
+      "detail": null
+    },
+    {
+      "name": "register Deleted User",
+      "method": "POST",
+      "path": "/api/auth/register",
+      "expectedStatus": [
+        201
+      ],
+      "actualStatus": 201,
+      "passed": true,
+      "durationMs": 128.39,
+      "detail": null
+    },
+    {
+      "name": "login e2e-solaris-1790865380-39960-deleted",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 99.09,
+      "detail": null
+    },
+    {
+      "name": "deleted user refresh",
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "expectedStatus": [
+        401
+      ],
+      "actualStatus": 401,
+      "passed": true,
+      "durationMs": 5.53,
+      "detail": null
+    },
+    {
+      "name": "list users",
+      "method": "GET",
+      "path": "/api/admin/users?page=0&size=20",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 9.71,
+      "detail": null
+    },
+    {
+      "name": "get admin user",
+      "method": "GET",
+      "path": "/api/admin/users/13",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 5.61,
+      "detail": null
+    },
+    {
+      "name": "create managed user",
+      "method": "POST",
+      "path": "/api/admin/users",
+      "expectedStatus": [
+        201
+      ],
+      "actualStatus": 201,
+      "passed": true,
+      "durationMs": 118.47,
+      "detail": null
+    },
+    {
+      "name": "duplicate admin-created user",
+      "method": "POST",
+      "path": "/api/admin/users",
+      "expectedStatus": [
+        409
+      ],
+      "actualStatus": 409,
+      "passed": true,
+      "durationMs": 4.87,
+      "detail": null
+    },
+    {
+      "name": "invalid user role",
+      "method": "POST",
+      "path": "/api/admin/users",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 3.65,
+      "detail": null
+    },
+    {
+      "name": "missing user fields",
+      "method": "POST",
+      "path": "/api/admin/users",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 3.4,
+      "detail": null
+    },
+    {
+      "name": "update managed user",
+      "method": "PUT",
+      "path": "/api/admin/users/17",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 7.14,
+      "detail": null
+    },
+    {
+      "name": "missing user",
+      "method": "GET",
+      "path": "/api/admin/users/9223372036854775807",
+      "expectedStatus": [
+        404
+      ],
+      "actualStatus": 404,
+      "passed": true,
+      "durationMs": 3.89,
+      "detail": null
+    },
+    {
+      "name": "invalid user ID",
+      "method": "GET",
+      "path": "/api/admin/users/not-a-number",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 3.12,
+      "detail": null
+    },
+    {
+      "name": "invalid user pagination",
+      "method": "GET",
+      "path": "/api/admin/users?page=-1&size=101",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 3.26,
+      "detail": null
+    },
+    {
+      "name": "admin cannot self-delete",
+      "method": "DELETE",
+      "path": "/api/admin/users/13",
+      "expectedStatus": [
+        403
+      ],
+      "actualStatus": 403,
+      "passed": true,
+      "durationMs": 3.41,
+      "detail": null
+    },
+    {
+      "name": "disable homeowner",
+      "method": "PUT",
+      "path": "/api/admin/users/15",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 6.33,
+      "detail": null
+    },
+    {
+      "name": "disabled user access",
+      "method": "GET",
+      "path": "/api/homeowner/profile",
+      "expectedStatus": [
+        401
+      ],
+      "actualStatus": 401,
+      "passed": true,
+      "durationMs": 2.88,
+      "detail": null
+    },
+    {
+      "name": "disabled user refresh",
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "expectedStatus": [
+        401
+      ],
+      "actualStatus": 401,
+      "passed": true,
+      "durationMs": 4.25,
+      "detail": null
+    },
+    {
+      "name": "re-enable homeowner",
+      "method": "PUT",
+      "path": "/api/admin/users/15",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 6.58,
+      "detail": null
+    },
+    {
+      "name": "login e2e-solaris-1790865380-39960-other",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 98.5,
+      "detail": null
+    },
+    {
+      "name": "get homeowner profile",
+      "method": "GET",
+      "path": "/api/homeowner/profile",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 5.26,
+      "detail": null
+    },
+    {
+      "name": "duplicate profile email",
+      "method": "PUT",
+      "path": "/api/homeowner/profile",
+      "expectedStatus": [
+        409
+      ],
+      "actualStatus": 409,
+      "passed": true,
+      "durationMs": 5.73,
+      "detail": null
+    },
+    {
+      "name": "logout original owner token",
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "expectedStatus": [
+        204
+      ],
+      "actualStatus": 204,
+      "passed": true,
+      "durationMs": 2.68,
+      "detail": null
+    },
+    {
+      "name": "update homeowner profile",
+      "method": "PUT",
+      "path": "/api/homeowner/profile",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 8.83,
+      "detail": null
+    },
+    {
+      "name": "email change invalidates old access",
+      "method": "GET",
+      "path": "/api/homeowner/profile",
+      "expectedStatus": [
+        401
+      ],
+      "actualStatus": 401,
+      "passed": true,
+      "durationMs": 3.28,
+      "detail": null
+    },
+    {
+      "name": "login e2e-solaris-1790865380-39960-owner-updated",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 115.22,
+      "detail": null
+    },
+    {
+      "name": "create site",
+      "method": "POST",
+      "path": "/api/admin/sites",
+      "expectedStatus": [
+        201
+      ],
+      "actualStatus": 201,
+      "passed": true,
+      "durationMs": 10.69,
+      "detail": null
+    },
+    {
+      "name": "create other-owner site",
+      "method": "POST",
+      "path": "/api/admin/sites",
+      "expectedStatus": [
+        201
+      ],
+      "actualStatus": 201,
+      "passed": true,
+      "durationMs": 8.5,
+      "detail": null
+    },
+    {
+      "name": "create disposable site",
+      "method": "POST",
+      "path": "/api/admin/sites",
+      "expectedStatus": [
+        201
+      ],
+      "actualStatus": 201,
+      "passed": true,
+      "durationMs": 8.64,
+      "detail": null
+    },
+    {
+      "name": "duplicate site code",
+      "method": "POST",
+      "path": "/api/admin/sites",
+      "expectedStatus": [
+        409
+      ],
+      "actualStatus": 409,
+      "passed": true,
+      "durationMs": 8.35,
+      "detail": null
+    },
+    {
+      "name": "site owner must be homeowner",
+      "method": "POST",
+      "path": "/api/admin/sites",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 5.72,
+      "detail": null
+    },
+    {
+      "name": "missing site owner",
+      "method": "POST",
+      "path": "/api/admin/sites",
+      "expectedStatus": [
+        404
+      ],
+      "actualStatus": 404,
+      "passed": true,
+      "durationMs": 6.2,
+      "detail": null
+    },
+    {
+      "name": "list sites",
+      "method": "GET",
+      "path": "/api/admin/sites?page=0&size=10",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 6.29,
+      "detail": null
+    },
+    {
+      "name": "get site",
+      "method": "GET",
+      "path": "/api/admin/sites/4",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 5.69,
+      "detail": null
+    },
+    {
+      "name": "update site",
+      "method": "PUT",
+      "path": "/api/admin/sites/4",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 7.61,
+      "detail": null
+    },
+    {
+      "name": "missing site",
+      "method": "GET",
+      "path": "/api/admin/sites/9223372036854775807",
+      "expectedStatus": [
+        404
+      ],
+      "actualStatus": 404,
+      "passed": true,
+      "durationMs": 4.02,
+      "detail": null
+    },
+    {
+      "name": "homeowner list sites",
+      "method": "GET",
+      "path": "/api/homeowner/sites",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 5.06,
+      "detail": null
+    },
+    {
+      "name": "homeowner get own site",
+      "method": "GET",
+      "path": "/api/homeowner/sites/4",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 5.8,
+      "detail": null
+    },
+    {
+      "name": "homeowner cannot get foreign site",
+      "method": "GET",
+      "path": "/api/homeowner/sites/5",
+      "expectedStatus": [
+        404
+      ],
+      "actualStatus": 404,
+      "passed": true,
+      "durationMs": 5.45,
+      "detail": null
+    },
+    {
+      "name": "create device",
+      "method": "POST",
+      "path": "/api/admin/devices",
+      "expectedStatus": [
+        201
+      ],
+      "actualStatus": 201,
+      "passed": true,
+      "durationMs": 8.01,
+      "detail": null
+    },
+    {
+      "name": "create foreign device",
+      "method": "POST",
+      "path": "/api/admin/devices",
+      "expectedStatus": [
+        201
+      ],
+      "actualStatus": 201,
+      "passed": true,
+      "durationMs": 9.41,
+      "detail": null
+    },
+    {
+      "name": "create disposable device",
+      "method": "POST",
+      "path": "/api/admin/devices",
+      "expectedStatus": [
+        201
+      ],
+      "actualStatus": 201,
+      "passed": true,
+      "durationMs": 9.12,
+      "detail": null
+    },
+    {
+      "name": "duplicate device identifier",
+      "method": "POST",
+      "path": "/api/admin/devices",
+      "expectedStatus": [
+        409
+      ],
+      "actualStatus": 409,
+      "passed": true,
+      "durationMs": 6.01,
+      "detail": null
+    },
+    {
+      "name": "invalid device enum",
+      "method": "POST",
+      "path": "/api/admin/devices",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 3.33,
+      "detail": null
+    },
+    {
+      "name": "missing device site",
+      "method": "POST",
+      "path": "/api/admin/devices",
+      "expectedStatus": [
+        404
+      ],
+      "actualStatus": 404,
+      "passed": true,
+      "durationMs": 5.57,
+      "detail": null
+    },
+    {
+      "name": "list filtered devices",
+      "method": "GET",
+      "path": "/api/admin/devices?status=ONLINE&type=SOLAR_INVERTER&siteId=4&page=0&size=10",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 6.98,
+      "detail": null
+    },
+    {
+      "name": "get device",
+      "method": "GET",
+      "path": "/api/admin/devices/4",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 5.48,
+      "detail": null
+    },
+    {
+      "name": "update device",
+      "method": "PUT",
+      "path": "/api/admin/devices/4",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 8.18,
+      "detail": null
+    },
+    {
+      "name": "missing device",
+      "method": "GET",
+      "path": "/api/admin/devices/9223372036854775807",
+      "expectedStatus": [
+        404
+      ],
+      "actualStatus": 404,
+      "passed": true,
+      "durationMs": 4.14,
+      "detail": null
+    },
+    {
+      "name": "invalid device filter",
+      "method": "GET",
+      "path": "/api/admin/devices?status=INVALID",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 2.97,
+      "detail": null
+    },
+    {
+      "name": "create battery",
+      "method": "POST",
+      "path": "/api/admin/batteries",
+      "expectedStatus": [
+        201
+      ],
+      "actualStatus": 201,
+      "passed": true,
+      "durationMs": 7.31,
+      "detail": null
+    },
+    {
+      "name": "create foreign battery",
+      "method": "POST",
+      "path": "/api/admin/batteries",
+      "expectedStatus": [
+        201
+      ],
+      "actualStatus": 201,
+      "passed": true,
+      "durationMs": 7.25,
+      "detail": null
+    },
+    {
+      "name": "create disposable battery",
+      "method": "POST",
+      "path": "/api/admin/batteries",
+      "expectedStatus": [
+        201
+      ],
+      "actualStatus": 201,
+      "passed": true,
+      "durationMs": 6.81,
+      "detail": null
+    },
+    {
+      "name": "duplicate battery identifier",
+      "method": "POST",
+      "path": "/api/admin/batteries",
+      "expectedStatus": [
+        409
+      ],
+      "actualStatus": 409,
+      "passed": true,
+      "durationMs": 4.54,
+      "detail": null
+    },
+    {
+      "name": "battery stored energy exceeds capacity",
+      "method": "POST",
+      "path": "/api/admin/batteries",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 5.85,
+      "detail": null
+    },
+    {
+      "name": "invalid battery enum",
+      "method": "POST",
+      "path": "/api/admin/batteries",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 3.2,
+      "detail": null
+    },
+    {
+      "name": "missing battery site",
+      "method": "POST",
+      "path": "/api/admin/batteries",
+      "expectedStatus": [
+        404
+      ],
+      "actualStatus": 404,
+      "passed": true,
+      "durationMs": 5.58,
+      "detail": null
+    },
+    {
+      "name": "list batteries",
+      "method": "GET",
+      "path": "/api/admin/batteries?page=0&size=10",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 6.14,
+      "detail": null
+    },
+    {
+      "name": "get battery",
+      "method": "GET",
+      "path": "/api/admin/batteries/4",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 4.98,
+      "detail": null
+    },
+    {
+      "name": "update battery",
+      "method": "PUT",
+      "path": "/api/admin/batteries/4",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 7.99,
+      "detail": null
+    },
+    {
+      "name": "missing battery",
+      "method": "GET",
+      "path": "/api/admin/batteries/9223372036854775807",
+      "expectedStatus": [
+        404
+      ],
+      "actualStatus": 404,
+      "passed": true,
+      "durationMs": 4.27,
+      "detail": null
+    },
+    {
+      "name": "get settings",
+      "method": "GET",
+      "path": "/api/admin/settings",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 4.44,
+      "detail": null
+    },
+    {
+      "name": "update settings",
+      "method": "PUT",
+      "path": "/api/admin/settings",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 8.43,
+      "detail": null
+    },
+    {
+      "name": "invalid settings",
+      "method": "PUT",
+      "path": "/api/admin/settings",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 4.2,
+      "detail": null
+    },
+    {
+      "name": "homeowner cannot read settings",
+      "method": "GET",
+      "path": "/api/admin/settings",
+      "expectedStatus": [
+        403
+      ],
+      "actualStatus": 403,
+      "passed": true,
+      "durationMs": 3.13,
+      "detail": null
+    },
+    {
+      "name": "energy summary",
+      "method": "GET",
+      "path": "/api/homeowner/energy/summary?siteId=4&from=2026-09-30T14%3A36%3A22%2B00%3A00&to=2026-10-01T14%3A41%3A22%2B00%3A00",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 57.74,
+      "detail": null
+    },
+    {
+      "name": "energy readings",
+      "method": "GET",
+      "path": "/api/homeowner/energy/readings?siteId=4&from=2026-09-30T14%3A36%3A22%2B00%3A00&to=2026-10-01T14%3A41%3A22%2B00%3A00&page=0&size=20",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 24.21,
+      "detail": null
+    },
+    {
+      "name": "foreign energy site",
+      "method": "GET",
+      "path": "/api/homeowner/energy/summary?siteId=5",
+      "expectedStatus": [
+        404
+      ],
+      "actualStatus": 404,
+      "passed": true,
+      "durationMs": 6.58,
+      "detail": null
+    },
+    {
+      "name": "invalid energy time order",
+      "method": "GET",
+      "path": "/api/homeowner/energy/summary?from=2026-10-01T14%3A41%3A22%2B00%3A00&to=2026-09-30T14%3A36%3A22%2B00%3A00",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 4.17,
+      "detail": null
+    },
+    {
+      "name": "oversized energy range",
+      "method": "GET",
+      "path": "/api/homeowner/energy/readings?from=2020-01-01T00%3A00%3A00Z&to=2022-01-01T00%3A00%3A00Z",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 3.86,
+      "detail": null
+    },
+    {
+      "name": "malformed energy timestamp",
+      "method": "GET",
+      "path": "/api/homeowner/energy/readings?from=not-a-date",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 4.43,
+      "detail": null
+    },
+    {
+      "name": "invalid energy pagination",
+      "method": "GET",
+      "path": "/api/homeowner/energy/readings?page=-1&size=201",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 4.39,
+      "detail": null
+    },
+    {
+      "name": "empty energy range",
+      "method": "GET",
+      "path": "/api/homeowner/energy/readings?from=2020-01-01T00%3A00%3A00Z&to=2020-01-02T00%3A00%3A00Z",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 8.72,
+      "detail": null
+    },
+    {
+      "name": "daily JDBC energy report",
+      "method": "GET",
+      "path": "/api/homeowner/reports/energy?siteId=4&from=2026-10-01&to=2026-10-01",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 17.03,
+      "detail": null
+    },
+    {
+      "name": "foreign report site",
+      "method": "GET",
+      "path": "/api/homeowner/reports/energy?siteId=5",
+      "expectedStatus": [
+        404
+      ],
+      "actualStatus": 404,
+      "passed": true,
+      "durationMs": 6.43,
+      "detail": null
+    },
+    {
+      "name": "invalid report range",
+      "method": "GET",
+      "path": "/api/homeowner/reports/energy?from=2026-02-02&to=2026-02-01",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 3.6,
+      "detail": null
+    },
+    {
+      "name": "oversized report range",
+      "method": "GET",
+      "path": "/api/homeowner/reports/energy?from=2020-01-01&to=2022-01-02",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 3.29,
+      "detail": null
+    },
+    {
+      "name": "storage status",
+      "method": "GET",
+      "path": "/api/homeowner/storage/status",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 9.84,
+      "detail": null
+    },
+    {
+      "name": "storage history",
+      "method": "GET",
+      "path": "/api/homeowner/storage/history?batteryId=4&from=2026-09-30T14%3A36%3A22%2B00%3A00&to=2026-10-01T14%3A41%3A22%2B00%3A00&page=0&size=20",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 16.08,
+      "detail": null
+    },
+    {
+      "name": "foreign battery history",
+      "method": "GET",
+      "path": "/api/homeowner/storage/history?batteryId=5",
+      "expectedStatus": [
+        404
+      ],
+      "actualStatus": 404,
+      "passed": true,
+      "durationMs": 6.86,
+      "detail": null
+    },
+    {
+      "name": "invalid storage time order",
+      "method": "GET",
+      "path": "/api/homeowner/storage/history?from=2026-10-01T14%3A41%3A22%2B00%3A00&to=2026-09-30T14%3A36%3A22%2B00%3A00",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 4.12,
+      "detail": null
+    },
+    {
+      "name": "invalid storage pagination",
+      "method": "GET",
+      "path": "/api/homeowner/storage/history?page=-1&size=201",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 3.86,
+      "detail": null
+    },
+    {
+      "name": "homeowner alerts",
+      "method": "GET",
+      "path": "/api/homeowner/alerts?read=false&page=0&size=20",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 13.97,
+      "detail": null
+    },
+    {
+      "name": "mark own alert read",
+      "method": "PUT",
+      "path": "/api/homeowner/alerts/1/read",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 12.06,
+      "detail": null
+    },
+    {
+      "name": "mark foreign alert read",
+      "method": "PUT",
+      "path": "/api/homeowner/alerts/2/read",
+      "expectedStatus": [
+        404
+      ],
+      "actualStatus": 404,
+      "passed": true,
+      "durationMs": 7.48,
+      "detail": null
+    },
+    {
+      "name": "missing homeowner alert",
+      "method": "PUT",
+      "path": "/api/homeowner/alerts/9223372036854775807/read",
+      "expectedStatus": [
+        404
+      ],
+      "actualStatus": 404,
+      "passed": true,
+      "durationMs": 7.24,
+      "detail": null
+    },
+    {
+      "name": "invalid homeowner alert pagination",
+      "method": "GET",
+      "path": "/api/homeowner/alerts?page=-1&size=101",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 3.76,
+      "detail": null
+    },
+    {
+      "name": "admin alerts with filters",
+      "method": "GET",
+      "path": "/api/admin/alerts?type=LOW_BATTERY&severity=WARNING&read=false&userId=15&page=0&size=20",
+      "expectedStatus": [
+        200
+      ],
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 11.94,
+      "detail": null
+    },
+    {
+      "name": "invalid admin alert enum",
+      "method": "GET",
+      "path": "/api/admin/alerts?type=INVALID",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 3.99,
+      "detail": null
+    },
+    {
+      "name": "invalid admin alert pagination",
+      "method": "GET",
+      "path": "/api/admin/alerts?page=-1&size=101",
+      "expectedStatus": [
+        400
+      ],
+      "actualStatus": 400,
+      "passed": true,
+      "durationMs": 3.95,
+      "detail": null
+    },
+    {
+      "name": "cannot transfer site with dependents",
+      "method": "PUT",
+      "path": "/api/admin/sites/4",
+      "expectedStatus": [
+        409
+      ],
+      "actualStatus": 409,
+      "passed": true,
+      "durationMs": 9.05,
+      "detail": null
+    },
+    {
+      "name": "cannot move device with telemetry",
+      "method": "PUT",
+      "path": "/api/admin/devices/4",
+      "expectedStatus": [
+        409
+      ],
+      "actualStatus": 409,
+      "passed": true,
+      "durationMs": 7.85,
+      "detail": null
+    },
+    {
+      "name": "cannot delete device with telemetry",
+      "method": "DELETE",
+      "path": "/api/admin/devices/4",
+      "expectedStatus": [
+        409
+      ],
+      "actualStatus": 409,
+      "passed": true,
+      "durationMs": 6.61,
+      "detail": null
+    },
+    {
+      "name": "cannot move battery with history",
+      "method": "PUT",
+      "path": "/api/admin/batteries/4",
+      "expectedStatus": [
+        409
+      ],
+      "actualStatus": 409,
+      "passed": true,
+      "durationMs": 13.58,
+      "detail": null
+    },
+    {
+      "name": "cannot delete battery with history",
+      "method": "DELETE",
+      "path": "/api/admin/batteries/4",
+      "expectedStatus": [
+        409
+      ],
+      "actualStatus": 409,
+      "passed": true,
+      "durationMs": 6.11,
+      "detail": null
+    },
+    {
+      "name": "cannot delete site with dependents",
+      "method": "DELETE",
+      "path": "/api/admin/sites/4",
+      "expectedStatus": [
+        409
+      ],
+      "actualStatus": 409,
+      "passed": true,
+      "durationMs": 5.58,
+      "detail": null
+    },
+    {
+      "name": "delete dependency-free device",
+      "method": "DELETE",
+      "path": "/api/admin/devices/6",
+      "expectedStatus": [
+        204
+      ],
+      "actualStatus": 204,
+      "passed": true,
+      "durationMs": 15.5,
+      "detail": null
+    },
+    {
+      "name": "delete dependency-free battery",
+      "method": "DELETE",
+      "path": "/api/admin/batteries/6",
+      "expectedStatus": [
+        204
+      ],
+      "actualStatus": 204,
+      "passed": true,
+      "durationMs": 8.07,
+      "detail": null
+    },
+    {
+      "name": "delete dependency-free site",
+      "method": "DELETE",
+      "path": "/api/admin/sites/6",
+      "expectedStatus": [
+        204
+      ],
+      "actualStatus": 204,
+      "passed": true,
+      "durationMs": 11.25,
+      "detail": null
+    },
+    {
+      "name": "delete managed user",
+      "method": "DELETE",
+      "path": "/api/admin/users/17",
+      "expectedStatus": [
+        204
+      ],
+      "actualStatus": 204,
+      "passed": true,
+      "durationMs": 6.08,
+      "detail": null
+    },
+    {
+      "name": "authenticated unknown endpoint",
+      "method": "GET",
+      "path": "/api/does-not-exist",
+      "expectedStatus": [
+        404
+      ],
+      "actualStatus": 404,
+      "passed": true,
+      "durationMs": 8.81,
+      "detail": null
+    }
+  ]
+}

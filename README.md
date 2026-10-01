@@ -96,6 +96,14 @@ cd backend
 ./gradlew clean build
 ```
 
+With the application and Docker services running, the disposable live HTTP suite can be run from the repository root:
+
+```bash
+python3 backend/scripts/live_api_e2e.py
+```
+
+It writes an assertion report to `output/api/live-api-test-report.json` and removes its PostgreSQL fixtures after the run. The importable Postman collection is at `output/api/Solaris.postman_collection.json`. A Django-to-Spring endpoint and architecture guide is available at `output/pdf/Solaris_API_Guide_for_Django_Developers.pdf`.
+
 ## License
 
 This project is currently being developed as a personal/academic project.
