@@ -12,12 +12,20 @@ spring:
       ddl-auto: update
     open-in-view: false
 
+  flyway:
+    baseline-on-migrate: true
+    baseline-version: 0
+    # Existing Solaris databases contain V1/V2 history from before migrations were checked in.
+    ignore-migration-patterns: "*:missing"
+
   data:
     redis:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
       password: ${REDIS_PASSWORD:}
       timeout: 2s
+      repositories:
+        enabled: false
 
 jwt:
   secret: ${JWT_SECRET}
