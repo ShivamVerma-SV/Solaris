@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:solaris;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+
+jwt:
+  secret: test-only-secret-key-that-is-at-least-thirty-two-bytes-long
+  access-token-ttl: 15m
+  refresh-token-ttl: 7d
+
+solaris:
+  monitoring:
+    fixed-delay: 3600000

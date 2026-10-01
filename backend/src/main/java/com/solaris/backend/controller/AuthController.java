@@ -2,6 +2,7 @@ package com.solaris.backend.controller;
 
 import com.solaris.backend.dto.auth.LoginRequest;
 import com.solaris.backend.dto.auth.LoginResponse;
+import com.solaris.backend.dto.auth.RefreshTokenRequest;
 import com.solaris.backend.dto.auth.RegisterRequest;
 import com.solaris.backend.service.AuthService;
 import jakarta.validation.Valid;
@@ -10,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -22,7 +23,7 @@ public class AuthController {
 
         authService.register(request);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(201).build();
     }
 
     @PostMapping("/login")
@@ -32,5 +33,17 @@ public class AuthController {
         return ResponseEntity.ok(
                 authService.login(request)
         );
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<LoginResponse> refresh(
+            @Valid @RequestBody RefreshTokenRequest request) {
+        return ResponseEntity.ok(authService.refresh(request.getRefreshToken()));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@Valid @RequestBody RefreshTokenRequest request) {
+        authService.logout(request.getRefreshToken());
+        return ResponseEntity.noContent().build();
     }
 }

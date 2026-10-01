@@ -3,14 +3,27 @@ spring:
     name: backend
 
   datasource:
-    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME} #Connect Database from Docker to Spring JPA
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
 
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    open-in-view: false
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 2s
 
 jwt:
   secret: ${JWT_SECRET}
+  access-token-ttl: 15m
+  refresh-token-ttl: 7d
+
+solaris:
+  monitoring:
+    fixed-delay: ${MONITORING_FIXED_DELAY:60000}
