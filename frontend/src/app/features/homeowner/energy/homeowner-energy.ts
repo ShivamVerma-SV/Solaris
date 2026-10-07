@@ -1,0 +1,36 @@
+import { DatePipe, DecimalPipe } from '@angular/common';
+import { Component, computed, inject, signal } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { forkJoin } from 'rxjs';
+import { EnergyReading, EnergySummary, Site } from '../../../core/models/api.models';
+import { HomeownerApiService } from '../../../core/services/homeowner-api.service';
+import { apiErrorMessage } from '../../../core/services/http-error';
+import { PageState } from '../../../shared/ui/page-state';
+
+function dateValue(date: Date): string { return date.toISOString().slice(0, 10); }
+function range(from: string, to: string): { from: string; to: string } { return { from: new Date(`${from}T00:00:00`).toISOString(), to: new Date(`${to}T23:59:59.999`).toISOString() }; }
+
+@Component({
+  selector: 'app-homeowner-energy', imports: [ReactiveFormsModule, DatePipe, DecimalPipe, PageState],
+  template: `
+    <header class="page-header"><div><span class="eyebrow">Energy analysis</span><h1>Production and consumption</h1><p>Explore metered energy readings across a bounded date range.</p></div></header>
+    <form class="filter-bar" [formGroup]="filters" (ngSubmit)="load()"><label><span>Site</span><select formControlName="siteId"><option value="">All sites</option>@for (site of sites(); track site.id) { <option [value]="site.id">{{ site.name }}</option> }</select></label><label><span>From</span><input type="date" formControlName="from" /></label><label><span>To</span><input type="date" formControlName="to" /></label><button class="button button--primary" type="submit">Apply range</button></form>
+    @if (loading()) { <app-page-state kind="loading" title="Loading energy data" message="Summarizing readings for this range…" /> } @else if (error()) { <app-page-state kind="error" title="Could not load energy" [message]="error()" (retry)="load()" /> } @else {
+      <section class="metric-grid"><article class="metric-card metric-card--production"><span>Production</span><strong>{{ summary()?.productionKwh | number:'1.1-2' }} <small>kWh</small></strong></article><article class="metric-card"><span>Consumption</span><strong>{{ summary()?.consumptionKwh | number:'1.1-2' }} <small>kWh</small></strong></article><article class="metric-card"><span>Grid import</span><strong>{{ summary()?.gridImportKwh | number:'1.1-2' }} <small>kWh</small></strong></article><article class="metric-card"><span>Grid export</span><strong>{{ summary()?.gridExportKwh | number:'1.1-2' }} <small>kWh</small></strong></article></section>
+      <section class="panel chart-panel"><div class="panel__header"><div><span class="eyebrow">Trend</span><h2>Reading profile</h2></div><div class="chart-legend"><span><i class="legend-production"></i>Production</span><span><i class="legend-consumption"></i>Consumption</span></div></div>
+        @if (chartReadings().length > 1) { <div class="line-chart" role="img" aria-label="Production and consumption trend for the selected date range"><svg viewBox="0 0 1000 280" preserveAspectRatio="none"><g class="grid-lines"><line x1="0" y1="40" x2="1000" y2="40"/><line x1="0" y1="120" x2="1000" y2="120"/><line x1="0" y1="200" x2="1000" y2="200"/><line x1="0" y1="275" x2="1000" y2="275"/></g><polyline class="chart-line chart-line--production" [attr.points]="productionPoints()"/><polyline class="chart-line chart-line--consumption" [attr.points]="consumptionPoints()"/></svg></div> } @else { <div class="compact-empty"><strong>Not enough readings for a trend</strong><span>At least two telemetry records are needed.</span></div> }
+      </section>
+      <section class="panel panel--table"><div class="panel__header"><div><span class="eyebrow">Telemetry</span><h2>Energy readings</h2></div><span class="badge">{{ total() }} records</span></div>@if (!readings().length) { <div class="compact-empty"><strong>No readings in this range</strong><span>Try a wider date range or another site.</span></div> } @else { <div class="table-scroll"><table><thead><tr><th>Time</th><th>Site / device</th><th>Production</th><th>Consumption</th><th>Import</th><th>Export</th></tr></thead><tbody>@for (reading of readings(); track reading.id) { <tr><td data-label="Time">{{ reading.timestamp | date:'short' }}</td><td data-label="Source"><strong>{{ reading.siteName }}</strong><small>{{ reading.deviceIdentifier }}</small></td><td data-label="Production">{{ reading.productionKwh | number:'1.1-3' }} kWh</td><td data-label="Consumption">{{ reading.consumptionKwh | number:'1.1-3' }} kWh</td><td data-label="Import">{{ reading.gridImportKwh | number:'1.1-3' }} kWh</td><td data-label="Export">{{ reading.gridExportKwh | number:'1.1-3' }} kWh</td></tr> }</tbody></table></div><div class="pagination"><span>Page {{ page() + 1 }} of {{ totalPages() || 1 }}</span><div><button class="button button--secondary button--small" [disabled]="page() === 0" (click)="changePage(-1)">Previous</button><button class="button button--secondary button--small" [disabled]="page() + 1 >= totalPages()" (click)="changePage(1)">Next</button></div></div> }</section>
+    }
+  `,
+})
+export class HomeownerEnergy {
+  private readonly api = inject(HomeownerApiService);
+  readonly sites = signal<Site[]>([]); readonly summary = signal<EnergySummary | null>(null); readonly readings = signal<EnergyReading[]>([]); readonly total = signal(0); readonly totalPages = signal(0); readonly page = signal(0); readonly loading = signal(true); readonly error = signal('');
+  readonly filters = new FormGroup({ siteId: new FormControl<number | ''>('', { nonNullable: true }), from: new FormControl(dateValue(new Date(Date.now() - 7 * 86400000)), { nonNullable: true }), to: new FormControl(dateValue(new Date()), { nonNullable: true }) });
+  readonly chartReadings = computed(() => [...this.readings()].reverse()); readonly maxValue = computed(() => Math.max(1, ...this.chartReadings().flatMap((item) => [item.productionKwh, item.consumptionKwh]))); readonly productionPoints = computed(() => this.points('productionKwh')); readonly consumptionPoints = computed(() => this.points('consumptionKwh'));
+  constructor() { this.api.sites().subscribe((sites) => this.sites.set(sites)); this.load(); }
+  load(): void { const values = this.filters.getRawValue(); const dates = range(values.from, values.to); const query = { ...dates, siteId: values.siteId || null, page: this.page(), size: 50 }; this.loading.set(true); this.error.set(''); forkJoin({ summary: this.api.energySummary(query), readings: this.api.energyReadings(query) }).subscribe({ next: ({ summary, readings }) => { this.summary.set(summary); this.readings.set(readings.content); this.total.set(readings.totalElements); this.totalPages.set(readings.totalPages); this.loading.set(false); }, error: (error: unknown) => { this.error.set(apiErrorMessage(error)); this.loading.set(false); } }); }
+  changePage(delta: number): void { this.page.update((value) => value + delta); this.load(); }
+  private points(field: 'productionKwh' | 'consumptionKwh'): string { const data = this.chartReadings(); const divisor = Math.max(1, data.length - 1); return data.map((item, index) => `${(index / divisor) * 1000},${270 - (item[field] / this.maxValue()) * 230}`).join(' '); }
+}

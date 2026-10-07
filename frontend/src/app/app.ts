@@ -1,12 +1,17 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { ThemeService } from './core/services/theme.service';
+import { ToastOutlet } from './shared/ui/toast-outlet';
 
 @Component({
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, ToastOutlet],
   selector: 'app-root',
-  styleUrl: './app.scss',
-  templateUrl: './app.html',
+  template: '<router-outlet /><app-toast-outlet />',
 })
 export class App {
-  protected readonly title = signal('frontend');
+  private readonly theme = inject(ThemeService);
+
+  constructor() {
+    this.theme.initialize();
+  }
 }

@@ -1,59 +1,34 @@
-# Frontend
+# Solaris frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.0.
+Angular 22 frontend for the Solaris solar-energy monitoring backend.
 
-## Development server
+## Local development
 
-To start a local development server, run:
-
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Start the Spring Boot backend on port `8080`, then run:
 
 ```bash
-ng generate component component-name
+npm install
+npm start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+The Angular development server opens on `http://localhost:4200`. Requests to `/api` are forwarded to `http://localhost:8080` by `proxy.conf.json`, so no backend CORS change is required for local development.
+
+The production API base is also `/api`, configured in `src/environments/environment.production.ts`. Deploy the frontend behind the same origin as the backend, or adjust that environment value for the target deployment.
+
+## Commands
 
 ```bash
-ng generate --help
+npm run build
+npm test -- --watch=false
+npx tsc --noEmit -p tsconfig.app.json
 ```
 
-## Building
+## Authentication
 
-To build the project run:
+The application uses the backend's `/api/auth/login`, `/api/auth/register`, `/api/auth/refresh`, and `/api/auth/logout` endpoints. Access tokens are attached by a functional HTTP interceptor. A single shared refresh operation coordinates concurrent `401` responses and retries requests with the rotated token pair.
 
-```bash
-ng build
-```
+Routes are guarded for the backend roles `ADMIN` and `HOMEOWNER`. These client-side restrictions improve navigation only; the Spring Security configuration remains authoritative.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Themes
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Solaris includes purpose-built light and dark themes using semantic design tokens. The user's selection is stored locally, with the operating-system preference used when no selection exists.
