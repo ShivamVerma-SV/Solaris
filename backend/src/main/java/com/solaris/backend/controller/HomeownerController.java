@@ -1,5 +1,6 @@
 package com.solaris.backend.controller;
 
+import com.solaris.backend.dto.homeowner.ChangePasswordRequest;
 import com.solaris.backend.dto.homeowner.ProfileResponse;
 import com.solaris.backend.dto.homeowner.UpdateProfileRequest;
 import com.solaris.backend.dto.site.SiteResponse;
@@ -8,12 +9,14 @@ import com.solaris.backend.service.HomeownerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 
@@ -33,6 +36,14 @@ public class HomeownerController {
             @AuthenticationPrincipal AuthenticatedUser user,
             @Valid @RequestBody UpdateProfileRequest request) {
         return service.updateProfile(user.id(), request);
+    }
+
+    @PutMapping("/profile/password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void changePassword(
+            @AuthenticationPrincipal AuthenticatedUser user,
+            @Valid @RequestBody ChangePasswordRequest request) {
+        service.changePassword(user.id(), request);
     }
 
     @GetMapping("/sites")

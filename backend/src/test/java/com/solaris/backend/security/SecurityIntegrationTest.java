@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -82,6 +83,39 @@ class SecurityIntegrationTest {
                         .header("Authorization", bearer(jwtService.generateAccessToken(admin))))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.status").value(403));
+    }
+
+    @Test
+    void homeownerCanChangePasswordWithCurrentPassword() throws Exception {
+        mockMvc.perform(put("/api/homeowner/profile/password")
+                        .header("Authorization", bearer(jwtService.generateAccessToken(homeowner)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "currentPassword": "password-123",
+                                  "newPassword": "updated-password-456"
+                                }
+                                """))
+                .andExpect(status().isNoContent());
+
+        User updated = userRepository.findById(homeowner.getId()).orElseThrow();
+        org.assertj.core.api.Assertions.assertThat(
+                passwordEncoder.matches("updated-password-456", updated.getPassword())).isTrue();
+    }
+
+    @Test
+    void incorrectCurrentPasswordReturnsBadRequest() throws Exception {
+        mockMvc.perform(put("/api/homeowner/profile/password")
+                        .header("Authorization", bearer(jwtService.generateAccessToken(homeowner)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "currentPassword": "incorrect-password",
+                                  "newPassword": "updated-password-456"
+                                }
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Current password is incorrect"));
     }
 
     @Test

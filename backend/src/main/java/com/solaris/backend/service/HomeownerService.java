@@ -1,15 +1,18 @@
 package com.solaris.backend.service;
 
+import com.solaris.backend.dto.homeowner.ChangePasswordRequest;
 import com.solaris.backend.dto.homeowner.ProfileResponse;
 import com.solaris.backend.dto.homeowner.UpdateProfileRequest;
 import com.solaris.backend.dto.site.SiteResponse;
 import com.solaris.backend.entity.SolarSite;
 import com.solaris.backend.entity.User;
+import com.solaris.backend.exception.BadRequestException;
 import com.solaris.backend.exception.ConflictException;
 import com.solaris.backend.exception.ResourceNotFoundException;
 import com.solaris.backend.repository.SolarSiteRepository;
 import com.solaris.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +24,7 @@ import java.util.Locale;
 public class HomeownerService {
     private final UserRepository userRepository;
     private final SolarSiteRepository siteRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     public ProfileResponse profile(Long userId) {
@@ -38,6 +42,19 @@ public class HomeownerService {
         user.setEmail(email);
         user.setPhone(normalizeNullable(request.getPhone()));
         return toProfile(userRepository.save(user));
+    }
+
+    @Transactional
+    public void changePassword(Long userId, ChangePasswordRequest request) {
+        User user = findUser(userId);
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new BadRequestException("Current password is incorrect");
+        }
+        if (passwordEncoder.matches(request.getNewPassword(), user.getPassword())) {
+            throw new BadRequestException("New password must be different from the current password");
+        }
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
     }
 
     @Transactional(readOnly = true)
