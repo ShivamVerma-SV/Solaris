@@ -34,9 +34,11 @@ public class EnergyReportService {
             throw new BadRequestException("Report date range cannot exceed 366 days");
         }
         if (siteId != null && siteRepository.findByIdAndOwnerId(siteId, ownerId).isEmpty()) {
+            // A non-owned site is reported as missing to avoid revealing that another user's site exists.
             throw new ResourceNotFoundException("Solar site not found");
         }
         try {
+            // Convert the inclusive date range into a half-open UTC interval for unambiguous SQL boundaries.
             return reportRepository.dailyReport(
                     ownerId,
                     siteId,

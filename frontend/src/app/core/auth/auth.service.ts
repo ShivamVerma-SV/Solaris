@@ -28,6 +28,8 @@ export class AuthService {
   }
 
   refreshAccessToken(): Observable<string> {
+    // Share one rotation request between concurrent 401 responses. Sending the same single-use
+    // refresh token twice would cause one request to revoke the session unexpectedly.
     if (this.refreshInFlight) return this.refreshInFlight;
     const refreshToken = this.session()?.refreshToken;
     if (!refreshToken) return throwError(() => new Error('No refresh token is available'));
@@ -52,6 +54,7 @@ export class AuthService {
       ? this.http.post<void>(`${environment.apiBaseUrl}/auth/logout`, { refreshToken }).pipe(catchError(() => of(undefined)))
       : of(undefined);
     return request.pipe(finalize(() => {
+      // Local cleanup must still happen if Redis or the API is temporarily unavailable.
       this.clear();
       void this.router.navigate(['/login']);
     }));
@@ -76,6 +79,7 @@ export class AuthService {
       const value = localStorage.getItem(STORAGE_KEY);
       if (!value) return null;
       const parsed = JSON.parse(value) as Partial<LoginResponse>;
+      // Treat malformed or incomplete browser storage as signed-out state instead of propagating it.
       if (!parsed.accessToken || !parsed.refreshToken || (parsed.role !== 'ADMIN' && parsed.role !== 'HOMEOWNER')) {
         localStorage.removeItem(STORAGE_KEY);
         return null;

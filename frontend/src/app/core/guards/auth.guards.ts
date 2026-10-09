@@ -17,6 +17,7 @@ function roleGuard(role: UserRole): CanActivateFn {
   return () => {
     const auth = inject(AuthService);
     if (!auth.isAuthenticated()) return inject(Router).createUrlTree(['/login']);
+    // Guards improve navigation UX; the backend remains the authority for every role-protected API call.
     return auth.session()?.role === role ? true : inject(Router).createUrlTree([auth.redirectForRole()]);
   };
 }

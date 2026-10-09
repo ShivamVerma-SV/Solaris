@@ -1,0 +1,9 @@
+# Optional host port bindings for running the Spring Boot and Angular dev servers outside Docker.
+services:
+  postgres:
+    ports:
+      - "127.0.0.1:${DB_PORT:-5432}:5432"
+
+  redis:
+    ports:
+      - "127.0.0.1:${REDIS_PORT:-6379}:6379"

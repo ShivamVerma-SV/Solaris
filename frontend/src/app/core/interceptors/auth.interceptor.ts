@@ -20,6 +20,7 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
       if (!(error instanceof HttpErrorResponse) || error.status !== 401 || !isApiRequest || isAuthRequest || !token) {
         return throwError(() => error);
       }
+      // Retry only ordinary API calls. Retrying a failed auth endpoint would create a refresh loop.
       return auth.refreshAccessToken().pipe(
         switchMap((newToken) => next(request.clone({ setHeaders: { Authorization: `Bearer ${newToken}` } }))),
       );

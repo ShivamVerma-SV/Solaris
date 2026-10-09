@@ -51,6 +51,7 @@ public class JwtService {
                 .subject(user.getEmail())
                 .claim("userId", user.getId())
                 .claim("type", TokenType.REFRESH.name())
+                // The unique ID is also the Redis key, allowing each refresh token to be rotated independently.
                 .id(UUID.randomUUID().toString())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + refreshTokenTtl.toMillis()))

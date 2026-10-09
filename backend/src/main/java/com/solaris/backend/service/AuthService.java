@@ -66,6 +66,7 @@ public class AuthService {
     @Transactional(readOnly = true)
     public LoginResponse refresh(String refreshToken) {
         RefreshTokenDetails token = parseRefreshToken(refreshToken);
+        // Consumption happens before replacement is issued: a refresh token is deliberately single-use.
         if (!refreshTokenStore.consume(token.tokenId(), token.userId(), hash(refreshToken))) {
             throw new UnauthorizedException("Refresh token is revoked or has already been used");
         }
@@ -94,6 +95,7 @@ public class AuthService {
         if (remainingTtl.isNegative() || remainingTtl.isZero()) {
             throw new IllegalStateException("Generated refresh token has no usable lifetime");
         }
+        // Match the Redis TTL to the signed expiry so stale rotation records clean themselves up.
         refreshTokenStore.store(claims.getId(), user.getId(), hash(refreshToken), remainingTtl);
 
         return LoginResponse.builder()

@@ -5,6 +5,7 @@ import { Alert, Battery, ChangePasswordRequest, DailyEnergyReport, EnergyReading
 
 function params(values: Record<string, string | number | boolean | null | undefined>): HttpParams {
   let result = new HttpParams();
+  // Omit unset filters rather than serializing "null" or an empty string as a meaningful query value.
   for (const [key, value] of Object.entries(values)) if (value !== null && value !== undefined && value !== '') result = result.set(key, value);
   return result;
 }

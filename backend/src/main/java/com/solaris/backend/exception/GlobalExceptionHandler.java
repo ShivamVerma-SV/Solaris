@@ -138,6 +138,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleUnexpected(Exception exception, HttpServletRequest request) {
+        // Log the full exception server-side, but keep implementation details out of the API response.
         LOGGER.error("Unhandled API error for {} {}", request.getMethod(), request.getRequestURI(), exception);
         return error(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred", request, null);
     }

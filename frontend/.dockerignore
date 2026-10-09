@@ -1,0 +1,14 @@
+node_modules
+dist
+.angular
+coverage
+.vscode
+.codex
+.git
+.gitignore
+.env
+.env.*
+!*.example
+*.log
+*.zip
+.DS_Store

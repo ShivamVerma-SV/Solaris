@@ -35,6 +35,7 @@ export class AppShell {
 
   constructor() {
     effect(() => {
+      // Move focus into the opened menu so keyboard users do not have to tab through the page again.
       if (this.userMenuOpen()) queueMicrotask(() => this.userMenuAction()?.nativeElement.focus());
     });
   }

@@ -73,6 +73,7 @@ public class AdminSiteService {
         }
         User owner = homeowner(request.getOwnerId());
         if (!site.getOwner().getId().equals(owner.getId()) && hasDependents(id)) {
+            // Reassigning a live site would silently move its historical telemetry and alerts to another user.
             throw new ConflictException("Site ownership cannot change while operational or historical data depends on it");
         }
         site.setOwner(owner);
@@ -88,6 +89,7 @@ public class AdminSiteService {
     public void delete(Long id) {
         SolarSite site = findSite(id);
         if (hasDependents(id)) {
+            // Keep operational history intact instead of relying on cascading deletes for domain data.
             throw new ConflictException("Site cannot be deleted while devices, batteries, telemetry, or alerts depend on it");
         }
         siteRepository.delete(site);

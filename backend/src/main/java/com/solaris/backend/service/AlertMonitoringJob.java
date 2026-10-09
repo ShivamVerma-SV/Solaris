@@ -18,6 +18,7 @@ public class AlertMonitoringJob {
         try {
             monitoringService.evaluate();
         } catch (RuntimeException exception) {
+            // A transient database failure should be visible in logs without permanently stopping future runs.
             LOGGER.error("Solar alert monitoring failed", exception);
         }
     }

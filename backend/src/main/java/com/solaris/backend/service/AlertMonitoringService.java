@@ -37,7 +37,8 @@ public class AlertMonitoringService {
 
     @Transactional
     public void evaluate() {
-        // The settings row lock serializes monitoring across application instances.
+        // The settings row lock serializes monitoring across application instances, while the cooldown
+        // checks below prevent repeated alerts for the same condition within an hour.
         SystemSetting settings = settingService.getEntityForUpdate();
         Instant now = Instant.now();
         Instant duplicateCutoff = now.minus(ALERT_COOLDOWN);

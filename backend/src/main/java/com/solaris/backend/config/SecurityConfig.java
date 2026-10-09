@@ -63,20 +63,20 @@ public class SecurityConfig {
                                 )))
 
                 .authorizeHttpRequests(auth -> auth
-                        //Public: Accessible by All
+                        // Registration and token lifecycle endpoints must be reachable before authentication.
                         .requestMatchers(
                                 "/api/auth/register",
                                 "/api/auth/login",
                                 "/api/auth/refresh",
                                 "/api/auth/logout",
+                                "/actuator/health",
                                 "/public/**"
                         ).permitAll()
 
-                        // Admin only
+                        // URL-level role checks provide the first boundary; services still enforce ownership rules.
                         .requestMatchers("/api/admin/**")
                         .hasRole("ADMIN")
 
-                        // Homeowner only
                         .requestMatchers("/api/homeowner/**")
                         .hasRole("HOMEOWNER")
 

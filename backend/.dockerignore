@@ -1,0 +1,11 @@
+.gradle
+build
+.idea
+*.iml
+.git
+.gitignore
+.env
+.env.*
+!*.example
+HELP.md
+scripts

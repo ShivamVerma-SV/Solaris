@@ -14,6 +14,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RedisRefreshTokenStore implements RefreshTokenStore {
     private static final String KEY_PREFIX = "solaris:refresh:";
+    // Comparing and deleting in one Redis script prevents two concurrent refresh requests from
+    // successfully spending the same token.
     private static final DefaultRedisScript<Long> CONSUME_SCRIPT = new DefaultRedisScript<>(
             "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end",
             Long.class
@@ -24,6 +26,7 @@ public class RedisRefreshTokenStore implements RefreshTokenStore {
     @Override
     public void store(String tokenId, Long userId, String tokenHash, Duration ttl) {
         try {
+            // Redis receives only a digest, so the bearer token itself is not recoverable from the store.
             redisTemplate.opsForValue().set(key(tokenId), value(userId, tokenHash), ttl);
         } catch (DataAccessException exception) {
             throw new TokenStoreUnavailableException(exception);

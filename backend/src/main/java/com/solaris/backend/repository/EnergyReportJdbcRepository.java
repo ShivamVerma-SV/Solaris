@@ -13,6 +13,8 @@ import java.util.List;
 @Repository
 @RequiredArgsConstructor
 public class EnergyReportJdbcRepository {
+    // Ownership is part of the SQL predicate rather than a later Java filter, so another user's
+    // telemetry never enters the report result set.
     private static final String BASE_SQL = """
             select cast(er.recorded_at as date) as report_date,
                    s.id as site_id,
@@ -34,6 +36,7 @@ public class EnergyReportJdbcRepository {
     public List<DailyEnergyReportResponse> dailyReport(
             Long ownerId, Long siteId, Instant fromInclusive, Instant toExclusive) {
         String sql = BASE_SQL
+                // The optional clause changes only query shape; all values remain bound parameters.
                 + (siteId == null ? "" : " and s.id = :siteId\n")
                 + " group by cast(er.recorded_at as date), s.id, s.name\n"
                 + " order by report_date asc, s.name asc";

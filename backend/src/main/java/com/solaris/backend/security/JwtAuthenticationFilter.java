@@ -67,6 +67,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter  {
                 return;
             }
 
+            // Re-read the user instead of trusting claims alone. Disabling an account or changing its
+            // role therefore takes effect immediately, even if an older access token has not expired.
             User user = userRepository.findById(userIdClaim.longValue()).orElse(null);
             if (user == null || !user.isEnabled() || !user.getEmail().equalsIgnoreCase(email)
                     || !user.getRole().name().equals(role)) {
