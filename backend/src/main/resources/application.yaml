@@ -48,5 +48,7 @@ jwt:
   refresh-token-ttl: ${JWT_REFRESH_TOKEN_TTL:7d}
 
 solaris:
+  # Compose and local tooling can use this flag to identify an explicitly selected development run.
+  development: ${DEVELOPMENT:false}
   monitoring:
     fixed-delay: ${MONITORING_FIXED_DELAY:60000}

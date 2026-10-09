@@ -36,7 +36,7 @@ The browser talks to a single origin. Nginx serves Angular routes and forwards `
 
 ```mermaid
 flowchart LR
-    B[Browser] -->|HTTP :8080| N[Nginx + Angular]
+    B[Browser] -->|HTTP :80| N[Nginx + Angular]
     N -->|/api on private network| A[Spring Boot API]
     A -->|JPA, JDBC, Flyway| P[(PostgreSQL 17)]
     A -->|Refresh-token hashes + TTL| R[(Redis 7)]
@@ -45,6 +45,7 @@ flowchart LR
 ```
 
 Only Nginx is published to the host in the normal Compose deployment. PostgreSQL, Redis, and Spring Boot communicate using the `postgres`, `redis`, and `backend` service names on the dedicated `solaris` network.
+The default production file publishes HTTP port 80 and no database or Redis host port. Database tools such as DBeaver can connect only when `compose.dev.yaml` is included explicitly; those development bindings are limited to `127.0.0.1`.
 
 ## Repository structure
 
@@ -66,7 +67,7 @@ Solaris/
 
 - Docker Desktop or Docker Engine with Docker Compose v2.
 - At least 2 GB of free memory for the first Java, Angular, and container image builds.
-- Free host port `8080`, or another loopback port configured through `FRONTEND_PORT`.
+- Free host port `80` for the production-style web entry point.
 
 Java, Gradle, Node.js, npm, PostgreSQL, and Redis do not need to be installed for the Docker workflow.
 
@@ -82,10 +83,10 @@ Edit `.env` and replace at least `DB_PASSWORD` and `JWT_SECRET`. The JWT secret 
 
 | Variable | Purpose | Example/default in template |
 | --- | --- | --- |
-| `FRONTEND_PORT` | Loopback port published by Nginx | `8080` |
+| `DEVELOPMENT` | Explicit mode flag; keep `false` for production and set `true` only for local debugging | `false` |
 | `POSTGRES_VOLUME_NAME` | Stable PostgreSQL volume name | `solaris_postgres_data` |
 | `REDIS_VOLUME_NAME` | Stable Redis refresh-token volume name | `solaris_redis_data` |
-| `SPRING_PROFILES_ACTIVE` | Active Spring profile label | `docker` |
+| `SPRING_PROFILES_ACTIVE` | Active Spring profile label | `production` |
 | `DB_HOST`, `DB_PORT` | Host/port for a locally run backend; Compose overrides these with `postgres:5432` | `localhost`, `5432` |
 | `DB_NAME`, `DB_USER`, `DB_PASSWORD` | PostgreSQL database and credentials | local values |
 | `REDIS_HOST`, `REDIS_PORT` | Host/port for a locally run backend; Compose overrides these with `redis:6379` | `localhost`, `6379` |
@@ -113,14 +114,12 @@ docker compose logs -f backend frontend
 
 | Resource | URL | Published port |
 | --- | --- | --- |
-| Solaris web application | <http://localhost:8080> | `FRONTEND_PORT` (default `8080`) |
-| REST API through Nginx | <http://localhost:8080/api> | same frontend port |
-| Frontend health check | <http://localhost:8080/health> | same frontend port |
+| Solaris web application | <http://localhost> | `80` |
+| REST API through Nginx | <http://localhost/api> | `80` |
+| Frontend health check | <http://localhost/health> | `80` |
 | PostgreSQL | private `postgres:5432` | none |
 | Redis | private `redis:6379` | none |
 | Spring Boot | private `backend:8080` | none |
-
-If `FRONTEND_PORT` is changed, replace `8080` in the browser URLs with that value.
 
 ## Service behavior
 
@@ -191,7 +190,9 @@ docker compose down
 
 ## Local development and debugging
 
-For IDE debugging or Angular's development server, publish only the data-service ports with the optional override:
+For IDE debugging or Angular's development server, set `DEVELOPMENT=true` and
+`SPRING_PROFILES_ACTIVE=development` in your local `.env`. Then publish PostgreSQL and Redis on
+loopback with the development-only override:
 
 ```bash
 docker compose -f compose.yaml -f compose.dev.yaml up -d postgres redis
@@ -247,24 +248,25 @@ docker compose config --quiet
 docker compose build
 docker compose up -d
 docker compose ps
-curl --fail http://localhost:8080/health
-curl --fail http://localhost:8080/login >/dev/null
-curl --fail http://localhost:8080/admin/users >/dev/null
+curl --fail http://localhost/health
+curl --fail http://localhost/login >/dev/null
+curl --fail http://localhost/admin/users >/dev/null
 ```
 
 The final URL checks confirm both static serving and Angular nested-route fallback. The disposable authenticated HTTP suite can be run through the Nginx proxy from the repository root when its required controlled admin credentials are available:
 
 ```bash
-SOLARIS_BASE_URL=http://localhost:8080 python3 backend/scripts/live_api_e2e.py
+SOLARIS_BASE_URL=http://localhost python3 backend/scripts/live_api_e2e.py
 ```
 
 It writes its assertion report to `output/api/live-api-test-report.json` and removes its own PostgreSQL fixtures after the run.
 
 ## Troubleshooting
 
-### Port 8080 is already in use
+### Port 80 is already in use
 
-Set another loopback port in `.env`, for example `FRONTEND_PORT=8081`, and recreate `frontend`. The API remains available through the same new port.
+Stop the conflicting web server or change the host-side `80` mapping in `compose.yaml` deliberately.
+PostgreSQL and Redis should remain unpublished in the production file.
 
 ### PostgreSQL or Redis is unhealthy
 
@@ -297,7 +299,7 @@ Nginx could not reach a healthy backend. Check `docker compose ps` and `docker c
 
 - Keep `.env` out of version control and use a secret manager or orchestrator secrets in production.
 - Terminate TLS before the frontend and send only HTTPS traffic to users.
-- Restrict host binding deliberately before exposing Solaris beyond one workstation; Compose defaults to loopback.
+- The production Compose file binds HTTP port 80 on the host. Apply the appropriate firewall and reverse-proxy rules before exposing it publicly.
 - Rotate the JWT secret with an explicit session invalidation plan because changing it invalidates all signed tokens.
 - Back up PostgreSQL before schema changes and verify Flyway migrations against a copy of production data.
 - Redis is part of the authentication path. Monitor it and choose an appropriate persistence/high-availability policy for a production environment.

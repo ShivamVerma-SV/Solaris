@@ -47,7 +47,8 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
-      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker}
+      DEVELOPMENT: ${DEVELOPMENT:-false}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-production}
       DB_HOST: postgres
       DB_PORT: 5432
       DB_NAME: ${DB_NAME:?Set DB_NAME in .env}
@@ -60,8 +61,6 @@ services:
       JWT_ACCESS_TOKEN_TTL: ${JWT_ACCESS_TOKEN_TTL:-15m}
       JWT_REFRESH_TOKEN_TTL: ${JWT_REFRESH_TOKEN_TTL:-7d}
       MONITORING_FIXED_DELAY: ${MONITORING_FIXED_DELAY:-60000}
-    expose:
-      - "8080"
     networks:
       - solaris
     depends_on:
@@ -85,7 +84,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - "127.0.0.1:${FRONTEND_PORT:-8080}:8080"
+      - "80:8080"
     networks:
       - solaris
     depends_on:

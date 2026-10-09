@@ -1,4 +1,4 @@
-# Optional host port bindings for running the Spring Boot and Angular dev servers outside Docker.
+# Development-only host bindings. Keep this file out of production Compose commands.
 services:
   postgres:
     ports:
@@ -7,3 +7,8 @@ services:
   redis:
     ports:
       - "127.0.0.1:${REDIS_PORT:-6379}:6379"
+
+  backend:
+    environment:
+      DEVELOPMENT: "true"
+      SPRING_PROFILES_ACTIVE: development
