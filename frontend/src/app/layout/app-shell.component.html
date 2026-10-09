@@ -1,0 +1,54 @@
+<div class="app-shell" [class.app-shell--open]="menuOpen()">
+    <button class="sidebar-scrim" type="button" aria-label="Close navigation" (click)="menuOpen.set(false)"></button>
+    <aside class="sidebar" aria-label="Primary navigation">
+        <div class="sidebar__brand"><app-brand /><button class="icon-button sidebar__close" type="button"
+                aria-label="Close navigation" (click)="menuOpen.set(false)"><app-icon name="close" /></button></div>
+        <nav class="nav-list">
+            <span class="nav-label">Workspace</span>
+            @for (item of navItems(); track item.path) {
+            <a [routerLink]="item.path" routerLinkActive="nav-link--active"
+                [routerLinkActiveOptions]="{ exact: item.path === basePath() }" class="nav-link"
+                (click)="menuOpen.set(false)">
+                <span class="nav-link__icon" [class.nav-link__icon--emphasized]="item.emphasizedIcon"><app-icon
+                        [name]="item.icon" /></span><span>{{ item.label }}</span>
+            </a>
+            }
+        </nav>
+        <div class="sidebar__status"><span class="status-dot status-dot--online"></span>
+            <div><strong>API connected</strong><small>Solaris operations</small></div>
+        </div>
+    </aside>
+    <div class="shell-main">
+        <header class="topbar">
+            <button class="icon-button menu-button" type="button" aria-label="Open navigation"
+                (click)="menuOpen.set(true)"><app-icon name="menu" /></button>
+            <div class="topbar__title"><strong>{{ areaLabel() }}</strong><span>Operational workspace</span></div>
+            <div class="topbar__actions">
+                <button class="theme-button" type="button" (click)="theme.toggle()"
+                    [attr.aria-label]="theme.current() === 'dark' ? 'Use light theme' : 'Use dark theme'"><app-icon
+                        [name]="theme.current() === 'dark' ? 'sun' : 'moon'" /></button>
+                @if (userMenuOpen()) { <button class="user-menu-scrim" type="button" aria-label="Close user menu"
+                    (click)="closeUserMenu()"></button> }
+                <div class="user-menu-wrap" (keydown.escape)="closeUserMenu(true)">
+                    <button #userMenuTrigger class="user-chip" type="button" [attr.aria-expanded]="userMenuOpen()"
+                        aria-controls="user-menu" [attr.aria-label]="'Open user menu for ' + auth.user()?.name"
+                        (click)="toggleUserMenu()">
+                        <span class="avatar" aria-hidden="true">{{ initials() }}</span><span><strong>{{
+                                auth.user()?.name }}</strong><small>{{ auth.user()?.role === 'ADMIN' ? 'Administrator' :
+                                'Homeowner' }}</small></span><app-icon name="chevron-down" />
+                    </button>
+                    @if (userMenuOpen()) {
+                    <section id="user-menu" class="user-menu" role="menu" aria-label="User account">
+                        <div class="user-menu__identity"><strong>{{ auth.user()?.name }}</strong><span>{{
+                                auth.user()?.email }}</span><small>{{ auth.user()?.role === 'ADMIN' ? 'Administrator' :
+                                'Homeowner' }}</small></div>
+                        <button #userMenuAction class="user-menu__action" type="button" role="menuitem"
+                            (click)="logout()"><app-icon name="logout" /><span>Sign out</span></button>
+                    </section>
+                    }
+                </div>
+            </div>
+        </header>
+        <main class="page-content" id="main-content"><router-outlet /></main>
+    </div>
+</div>

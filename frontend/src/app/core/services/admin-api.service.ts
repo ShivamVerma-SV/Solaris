@@ -21,7 +21,9 @@ export class AdminApiService {
   deleteUser(id: number) { return this.http.delete<void>(`${this.base}/users/${id}`); }
 
   devices(query: { page?: number; size?: number; status?: DeviceStatus | ''; type?: DeviceType | ''; siteId?: number | null } = {}) {
-    return this.http.get<PageResponse<Device>>(`${this.base}/devices`, { params: params({ page: query.page ?? 0, size: query.size ?? 20, status: query.status, type: query.type, siteId: query.siteId }) });
+    return this.http.get<PageResponse<Device>>(`${this.base}/devices`, { params: params({ page: query.page ?? 0, size: query.size ?? 20,
+       status: query.status, type: query.type, siteId: query.siteId 
+      }) });
   }
   createDevice(request: DeviceRequest) { return this.http.post<Device>(`${this.base}/devices`, request); }
   updateDevice(id: number, request: DeviceRequest) { return this.http.put<Device>(`${this.base}/devices/${id}`, request); }
@@ -40,6 +42,8 @@ export class AdminApiService {
   settings() { return this.http.get<SystemSettings>(`${this.base}/settings`); }
   updateSettings(request: SystemSettings) { return this.http.put<SystemSettings>(`${this.base}/settings`, request); }
   alerts(query: { page?: number; size?: number; type?: AlertType | ''; severity?: AlertSeverity | ''; read?: boolean | null; userId?: number | null } = {}) {
-    return this.http.get<PageResponse<Alert>>(`${this.base}/alerts`, { params: params({ page: query.page ?? 0, size: query.size ?? 20, type: query.type, severity: query.severity, read: query.read, userId: query.userId }) });
+    return this.http.get<PageResponse<Alert>>(`${this.base}/alerts`, { params: params({ page: query.page ?? 0, size: query.size ?? 20,
+       type: query.type, severity: query.severity, read: query.read, userId: query.userId 
+      }) });
   }
 }
